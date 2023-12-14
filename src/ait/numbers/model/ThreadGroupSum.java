@@ -1,6 +1,10 @@
 package ait.numbers.model;
 
-public class ThreadGroupSum extends GroupSum{
+import ait.numbers.task.OneGroupSum;
+
+import java.util.Arrays;
+
+public class ThreadGroupSum extends GroupSum {
     public ThreadGroupSum(int[][] numberGroups) {
         super(numberGroups);
     }
@@ -8,6 +12,20 @@ public class ThreadGroupSum extends GroupSum{
     @Override
     public int computeSum() {
         // TODO Homework: reduce sum numbers of numberGroups, use Threads
-        return 0;
+        Thread[] threads = new Thread[numberGroups.length];
+        OneGroupSum[] tasks = new OneGroupSum[numberGroups.length];
+        for (int i = 0; i < tasks.length; i++) {
+            tasks[i] = new OneGroupSum(numberGroups[i]);
+            threads[i] = new Thread(tasks[i]);
+            threads[i].start();
+        }
+        for (int i = 0; i < threads.length; i++) {
+            try {
+                threads[i].join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        return Arrays.stream(tasks).mapToInt(OneGroupSum::getSum).sum();
     }
 }
