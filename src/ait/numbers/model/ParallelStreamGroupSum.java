@@ -1,5 +1,7 @@
 package ait.numbers.model;
 
+import java.util.Arrays;
+
 public class ParallelStreamGroupSum extends GroupSum{
     public ParallelStreamGroupSum(int[][] numberGroups) {
         super(numberGroups);
@@ -8,6 +10,9 @@ public class ParallelStreamGroupSum extends GroupSum{
     @Override
     public int computeSum() {
         // TODO Advanced Homework: reduce sum numbers of numberGroups, use Arrays.stream(...).parallel()
-        return 0;
+        return Arrays.stream(numberGroups)
+                .parallel()
+                .mapToInt(a->Arrays.stream(a).sum())
+                .sum();
     }
 }
